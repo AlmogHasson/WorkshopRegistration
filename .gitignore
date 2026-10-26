@@ -1,0 +1,10 @@
+# IntelliJ local settings and build output
+.idea/
+*.iml
+out/
+
+# Include supplied libraries and required submission artifacts
+!lib/
+!lib/*.jar
+!artifacts/
+!artifacts/*.jar
