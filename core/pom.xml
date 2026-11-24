@@ -9,4 +9,10 @@
 
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
+
+    <modules>
+        <module>model-impl</module>
+        <module>logic-impl</module>
+    </modules>
+
 </project>
