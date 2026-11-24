@@ -26,12 +26,14 @@ import org.apache.commons.csv.CSVException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class WorkshopSystemImpl implements WorkshopSystem {
     //serialize nulls to ensure that all fields are included in the JSON output, even if they are null
     private static final Gson GSON = new GsonBuilder().serializeNulls().create();
+    private static final Logger LOGGER = LogManager.getLogger(WorkshopSystemImpl.class);
 
     // Using LinkedHashMap to maintain insertion order
     private final Map<String, Instructor> instructors = new LinkedHashMap<>();
@@ -124,7 +126,7 @@ public class WorkshopSystemImpl implements WorkshopSystem {
     @Override
     public Instructor createInstructor(String id, String name, String email) {
         if (instructors.containsKey(id)) {
-            throw new IllegalArgumentException(
+            throw rejected(
                     "Instructor with ID " + id + " already exists."
             );
         }
@@ -133,6 +135,8 @@ public class WorkshopSystemImpl implements WorkshopSystem {
 
         Instructor instructor = new InstructorImpl(id, name, email);
         instructors.put(id, instructor);
+
+        LOGGER.info("Created instructor {}", instructor.getId());
         return instructor;
     }
 
@@ -141,6 +145,7 @@ public class WorkshopSystemImpl implements WorkshopSystem {
         Workshop workshop = new WorkShopImpl(nextWorkshopId, name, description, null);
         workshops.put(nextWorkshopId, workshop);
         nextWorkshopId++;
+        LOGGER.info("Created workshop {}", workshop.getId());
         return workshop;
     }
 
@@ -153,7 +158,7 @@ public class WorkshopSystemImpl implements WorkshopSystem {
     @Override
     public Student createStudent(String id, String name, String email) {
         if (students.containsKey(id)) {
-            throw new IllegalArgumentException(
+            throw rejected(
                     "Student with ID " + id + " already exists."
             );
         }
@@ -161,6 +166,7 @@ public class WorkshopSystemImpl implements WorkshopSystem {
         validateEmail(email);
 
         Student student = new StudentImpl(id, name, email);
+        LOGGER.info("Created student {}", student.getId());
         students.put(id, student);
         return student;
     }
@@ -173,13 +179,13 @@ public class WorkshopSystemImpl implements WorkshopSystem {
         // Validate every member before changing any state.
         for (String studentId : members) {
             if (!seenIds.add(studentId)) {
-                throw new IllegalArgumentException(
+                throw rejected(
                         "Duplicate student ID: " + studentId);
             }
 
             Student student = students.get(studentId);
             if (student == null) {
-                throw new IllegalArgumentException(
+                throw rejected(
                         "Unknown student ID: " + studentId);
             }
 
@@ -187,7 +193,7 @@ public class WorkshopSystemImpl implements WorkshopSystem {
                     .anyMatch(team -> team.getStudents().contains(student));
 
             if (alreadyAssigned) {
-                throw new IllegalArgumentException(
+                throw rejected(
                         "Student already belongs to a team: " + studentId);
             }
 
@@ -203,6 +209,7 @@ public class WorkshopSystemImpl implements WorkshopSystem {
         teams.put(nextTeamId, team);
         nextTeamId++;
 
+        LOGGER.info("Created team {}", team.getId());
         return team;
     }
 
@@ -275,7 +282,7 @@ public class WorkshopSystemImpl implements WorkshopSystem {
 
     private static void validateEmail(String email) {
         if (!EmailValidator.getInstance().isValid(email)) {
-            throw new IllegalArgumentException("Invalid email address.");
+            throw rejected("Invalid email address.", null);
         }
     }
 
@@ -333,13 +340,13 @@ public class WorkshopSystemImpl implements WorkshopSystem {
             Iterator<CSVRecord> rows = parser.iterator();
 
             if (!rows.hasNext() || !rows.next().toList().equals(List.of("id", "name", "email"))) {
-                throw new IllegalArgumentException("Expected CSV header: id,name,email");
+                throw rejected("Expected CSV header: id,name,email");
             }
 
             while (rows.hasNext()) {
                 CSVRecord row = rows.next();
                 if (row.size() != 3) {
-                    throw new IllegalArgumentException(
+                    throw rejected(
                             "Expected 3 values in CSV record " + row.getRecordNumber());
                 }
 
@@ -348,7 +355,7 @@ public class WorkshopSystemImpl implements WorkshopSystem {
             }
         } catch (UncheckedIOException e) {
             if (e.getCause() instanceof CSVException) {
-                throw new IllegalArgumentException("Malformed CSV in " + source, e.getCause());
+                throw rejected("Malformed CSV in " + source, e.getCause());
             }
             throw e;
         } catch (IOException e) {
@@ -356,5 +363,15 @@ public class WorkshopSystemImpl implements WorkshopSystem {
         }
 
         return imported;
+    }
+
+    private static IllegalArgumentException rejected(String message) {
+        LOGGER.warn("Operation rejected: {}", message);
+        return rejected(message);
+    }
+
+    private static IllegalArgumentException rejected(String message, Throwable cause) {
+        LOGGER.warn("Operation rejected: {}", message);
+        return new IllegalArgumentException(message, cause);
     }
 }

@@ -2,6 +2,10 @@
 .idea/
 *.iml
 out/
+target/
+/instructors.json
+/students.json
+/teams.json
 
 # Include supplied libraries and required submission artifacts
 !lib/

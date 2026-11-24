@@ -18,6 +18,11 @@
         <commons-validator.version>1.11.0</commons-validator.version>
         <gson.version>2.15.0</gson.version>
         <commons-csv.version>1.14.1</commons-csv.version>
+        <log4j.version>2.26.1</log4j.version>
+        <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
+        <workshops.tester.version>${workshops.api.version}</workshops.tester.version>
+        <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
+        <exec-maven-plugin.version>3.7.0</exec-maven-plugin.version>
     </properties>
 
     <modules>
@@ -63,9 +68,51 @@
                 <version>${commons-csv.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-bom</artifactId>
+                <version>${log4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>patmal.workshops.student.impl</groupId>
+                <artifactId>logic-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>patmal.workshops</groupId>
+                <artifactId>workshop-tester</artifactId>
+                <version>${workshops.tester.version}</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
-
-
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven-shade-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
