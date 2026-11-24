@@ -6,3 +6,8 @@ classpath:C:\Users\almog\.m2\repository\commons-beanutils\commons-beanutils\1.11
 classpath:C:\Users\almog\.m2\repository\commons-digester\commons-digester\2.1\commons-digester-2.1.jar	196768:1285326138000
 classpath:C:\Users\almog\.m2\repository\commons-logging\commons-logging\1.4.0\commons-logging-1.4.0.jar	75828:1781210967000
 classpath:C:\Users\almog\.m2\repository\commons-collections\commons-collections\3.2.2\commons-collections-3.2.2.jar	588337:1447369876000
+classpath:C:\Users\almog\.m2\repository\com\google\code\gson\gson\2.15.0\gson-2.15.0.jar	316396:1792805018000
+classpath:C:\Users\almog\.m2\repository\com\google\errorprone\error_prone_annotations\2.50.0\error_prone_annotations-2.50.0.jar	20252:1781087668000
+classpath:C:\Users\almog\.m2\repository\org\apache\commons\commons-csv\1.14.1\commons-csv-1.14.1.jar	60964:1753621800000
+classpath:C:\Users\almog\.m2\repository\commons-io\commons-io\2.20.0\commons-io-2.20.0.jar	563971:1752528590000
+classpath:C:\Users\almog\.m2\repository\commons-codec\commons-codec\1.19.0\commons-codec-1.19.0.jar	374716:1752945592000
