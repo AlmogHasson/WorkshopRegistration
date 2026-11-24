@@ -11,7 +11,7 @@ import patmal.workshops.model.impl.TeamImpl;
 import patmal.workshops.model.impl.WorkShopImpl;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class WorkshopSystemImpl implements WorkshopSystem {
     private final Map<String, Instructor> instructors = new HashMap<>();

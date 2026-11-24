@@ -8,3 +8,5 @@ out/
 !lib/*.jar
 !artifacts/
 !artifacts/*.jar
+
+submission.txt
